@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/02 13:27:10 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/02 16:49:35 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/03 13:41:51 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef LS_H
@@ -26,13 +26,14 @@
 typedef	struct	s_l
 {
 	char	*mode;
-	int	nb_link;
+	long	nb_link;
 	char	*name;
 	char	*user;
 	char	*group_name;
-	unsigned int	nb_octet;
+	int	nb_octet;
 	char	*time;
-	char	*type;
+	char	type;
+	struct s_l *next;
 }				t_l;
 
 #endif
