@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/02 13:27:10 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/03 13:41:51 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/04 15:59:54 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef LS_H
@@ -22,6 +22,7 @@
 #include <time.h>
 #include <pwd.h>
 #include <grp.h>
+#include <errno.h>
 
 typedef	struct	s_l
 {
@@ -35,6 +36,15 @@ typedef	struct	s_l
 	char	type;
 	struct s_l *next;
 }				t_l;
+
+typedef struct	s_option
+{
+	int l;
+	int R;
+	int a;
+	int r;
+	int t;
+}				t_option;
 
 #endif
 
