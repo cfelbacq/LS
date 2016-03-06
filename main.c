@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/18 13:49:19 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/04 16:28:34 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/06 16:58:51 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ls.h"
@@ -144,57 +144,67 @@ t_list	*fill_str(char *str)
 	return (argv);
 }
 
-int	check_opt(t_option *opt, char *str)
+void	check_opt(int argc, t_option *opt, char **str)
 {
 	int i;
-	int checkstr;
+	int j;
 
-	checkstr = 0;
-	i = 0;
-	while (str[i] != 0 && str[0] == '-')
+	j = 1;
+	while (j < argc)
 	{
-		checkstr = 1;
-		if (str[i] == 'l')
-			opt->l = 1;
-		else if (str[i] == 'R')
-			opt->R = 1;
-		else if (str[i] == 'a')
-			opt->a = 1;
-		else if(str[i] == 'r')
-			opt->r = 1;
-		else if(str[i] == 't')
-			opt->r = 1;
-		i++;
+		i = 0;
+		while (str[j][i] != 0 && str[j][0] == '-')
+		{
+			if (str[j][i] == 'l')
+				opt->l = 1;
+			else if (str[j][i] == 'R')
+				opt->R = 1;
+			else if (str[j][i] == 'a')
+				opt->a = 1;
+			else if(str[j][i] == 'r')
+				opt->r = 1;
+			else if(str[j][i] == 't')
+				opt->t = 1;
+			i++;
+		}
+		if (str[j][0] != '-')
+			return ;
+		j++;
 	}
-	return (checkstr);
+}
+
+void	print_opt(t_option *opt)
+{
+	ft_putnbr(opt->l);
+	ft_putchar('\n');
+	ft_putnbr(opt->R);
+	ft_putchar('\n');
+	ft_putnbr(opt->a);
+	ft_putchar('\n');
+	ft_putnbr(opt->r);
+	ft_putchar('\n');
+	ft_putnbr(opt->t);
+	ft_putchar('\n');
 }
 
 void	create_l(int argc, char **argv, t_option *opt)
 {
 	int i;
-	t_list *str;
-	t_list *tmp;
+	int j;
 
+	j = argc;
 	i = 1;
-	str = fill_str(argv[i]);
-	tmp = str;
+	while (argc > i && argv[i][0] == '-')
+		i++;
+	if (argc == i)
+	{
+		print_dir(".", opt);
+		return ;
+	}
 	while (i < argc)
 	{
-		if (i > 1)
-		{
-		tmp->next = fill_str(argv[i]);
-		tmp = tmp->next;
-		}
+		print_dir(argv[i], opt);
 		i++;
-	}
-	tmp = str;
-	while(tmp)
-	{
-		if (check_opt(opt, tmp->content) == 0)
-			print_dir(tmp->content, opt);
-		else
-			print_dir(".", opt);
-		tmp = tmp->next;
 	}
 }
 
@@ -212,6 +222,8 @@ int	main(int argc, char **argv)
 	t_option opt;
 
 	init_option(&opt);
+	check_opt(argc ,&opt, argv);
+	print_opt(&opt);
 	if (argc == 1)
 		print_dir(".", &opt);
 	else
