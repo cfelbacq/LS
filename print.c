@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:54:18 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/10 11:57:20 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/11 15:19:21 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	print_l(t_l *data, t_option *opt)
 }
 void	print_path(char *path)
 {
+	ft_putchar('\n');
 	ft_putstr(path);
 	ft_putchar(':');
 	ft_putchar('\n');

@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/18 13:49:19 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/10 14:24:44 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/11 15:52:50 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ls.h"
@@ -24,9 +24,30 @@ void	ls(t_l *data, t_option *opt)
 		}
 		data = data->next;
 	}
+	if (!(opt->a == 0 && data->name[0] == '.'))
+	{
+		if (opt->l != 1)
+			ft_putendl(data->name);
+		else
+			print_l(data, opt);
+	}
 }
 
-void	print_dir(char *name, t_option *opt)
+t_l		*ins_start(t_l *begin, t_l *new)
+{
+	new->next = begin;
+	begin = new;
+	return (begin);
+}
+
+void	ins_middle(t_l *prev, t_l *new, t_l *next)
+{
+	prev->next = new;
+	if (next != NULL)
+	new->next = next;
+}
+
+t_l		*create_data(char *name)
 {
 	struct dirent *ent;
 	DIR *rep;
@@ -40,10 +61,28 @@ void	print_dir(char *name, t_option *opt)
 	tmp = data;
 	while ((ent = readdir(rep)) != NULL)
 	{
-		
-		tmp = tmp->next;
+		t_l *new;
+		new = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL);
+			if ((ft_strcmp(new->name, tmp->name)) < 0)
+				data = ins_start(data, new);
+			else
+			{
+				while (tmp->next != NULL && ft_strcmp(new->name, (tmp->next)->name) > 0)
+					tmp = tmp->next;
+				ins_middle(tmp, new, tmp->next);
+			}
+			tmp = data;
 	}
-	ft_putchar('\n');
+	return (data);
+}
+
+void	print_dir(char *name, t_option *opt)
+{
+	t_l *data;
+	t_l *tmp;
+
+	name = ft_strjoin(name, "/");
+	data = create_data(name);
 	tmp = data;
 	ls(tmp, opt);
 	while (tmp && opt->R == 1)
@@ -51,8 +90,11 @@ void	print_dir(char *name, t_option *opt)
 		if (tmp->type == 'd' && ft_strcmp(".", tmp->name) != 0 &&\
 				ft_strcmp("..", tmp->name) != 0)
 		{
-			print_path(ft_strjoin(name, tmp->name));
-			print_dir(ft_strjoin(name, tmp->name), opt);
+			if (!(opt->a == 0 && tmp->name[0] == '.'))
+			{
+				print_path(ft_strjoin(name, tmp->name));
+				print_dir(ft_strjoin(name, tmp->name), opt);
+			}
 		}
 		tmp = tmp->next;
 	}
