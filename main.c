@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/18 13:49:19 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/11 15:52:50 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/15 12:44:53 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ls.h"
@@ -82,7 +82,8 @@ void	print_dir(char *name, t_option *opt)
 	t_l *tmp;
 
 	name = ft_strjoin(name, "/");
-	data = create_data(name);
+	if ((data = create_data(name)) == NULL)
+		return ;
 	tmp = data;
 	ls(tmp, opt);
 	while (tmp && opt->R == 1)
@@ -98,27 +99,15 @@ void	print_dir(char *name, t_option *opt)
 		}
 		tmp = tmp->next;
 	}
+	free_data(data);
 }
 
-void	start(int argc, char **argv, t_option *opt)
+void	print_err(char *str)
 {
-	int i;
-	int j;
-
-	j = argc;
-	i = 1;
-	while (argc > i && argv[i][0] == '-')
-		i++;
-	if (argc == i)
-	{
-		print_dir(".", opt);
-		return ;
-	}
-	while (i < argc)
-	{
-		print_dir(argv[i], opt);
-		i++;
-	}
+			ft_putstr("ls: ");
+			ft_putstr(str);
+			ft_putstr(": ");
+			perror("");
 }
 
 int	main(int argc, char **argv)
@@ -127,7 +116,6 @@ int	main(int argc, char **argv)
 
 	init_option(&opt);
 	check_opt(argc ,&opt, argv);
-	print_opt(&opt);
 	if (argc == 1)
 		print_dir(".", &opt);
 	else
