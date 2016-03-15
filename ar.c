@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/15 10:57:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/15 12:44:51 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/15 17:31:28 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void	init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
 	{
 		if (tmp->type == 'd')
 		{
-			if (nb_file > 0 || nb_rep > 0)
+			if (nb_file > 0 || nb_rep > 1)
 			{
 				if (nb_file > 0 || i > 0)
 					ft_putchar('\n');
@@ -68,16 +68,13 @@ static void	init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
 static void	init_file(t_l *ar, t_option *opt, int *nb_file, int *nb_rep)
 {
 	t_l *tmp;
-	t_l *file;
 
 	tmp = ar;
-	file = NULL;
 	while(tmp)
 	{
 		if (tmp->type != 'd')
 		{
 			*nb_file += 1;
-			file = tmp;
 			if (opt->l == 1)
 				print_l(tmp, opt);
 			else
@@ -92,64 +89,65 @@ static void	init_file(t_l *ar, t_option *opt, int *nb_file, int *nb_rep)
 t_l	*remove_link(t_l *ar, t_l *tmp, int i)
 {
 	t_l *tmp2;
-	int j;
-
-	j = 0;
-	tmp2 = ar;
-	if (i == 0)
+	
+	if(tmp != NULL && tmp->next != NULL)
 	{
-		ar = tmp->next;
-		free(tmp);
-		return (ar);
+		tmp2 = tmp->next;
+		tmp->next = tmp2->next;
+		free_data(&tmp2, 0);
+	}
+	else if (tmp != NULL && tmp->next == NULL)
+	{
+		free(ar);
+		ar = NULL;
 	}
 	else
 	{
-		ft_putnbr(i);
-		while (j < i - 1)
-		{
-			tmp2 = tmp2->next;
-			j++;
-		}
-		tmp2->next = tmp->next;
-		free(tmp);
+		tmp2 = ar;
+		ar = ar->next;
+		free_data(&tmp2, 0);
 	}
-	return (NULL);
+	return (ar);
 }
 
-static void check_err(t_l *ar)
+static t_l *check_err(t_l *ar)
 {
 	int i;
 	DIR *rep;
 	t_l *tmp;
+	t_l *tmp2;
 	struct stat buf;
 
 	i = 0;
 	tmp = ar;
+	tmp2 = NULL;
 	while (tmp)
 	{
 		i++;
 		stat(tmp->name, &buf);
-		if (errno == ENOENT)
+		if (errno == ENOENT || errno == EACCES || errno == EBADF)
 		{
 			if ((rep = opendir(tmp->name)) == NULL)
 			{
 				print_err(tmp->name);
-				ar = remove_link(tmp, ar, i);
+				ar = remove_link(tmp2, ar, i);
 			}
 		}
+		tmp2 = tmp;
 		tmp = tmp->next;
 	}
+	return (ar);
 }
 
 static void	sort_ar(t_l *ar, t_option *opt)
 {
-	t_l *rep;
 	int nb_file;
 	int nb_rep;
-	t_l *tmp;
 	nb_file = 0;
 	nb_rep = 0;
-//	check_err(ar);
+	ar = check_err(ar);
+	if (ar == NULL)
+		exit(0) ;
 	init_file(ar, opt, &nb_file, &nb_rep);
 	init_rep(ar, opt, nb_file, nb_rep);
 }
@@ -157,11 +155,7 @@ static void	sort_ar(t_l *ar, t_option *opt)
 void	start(int argc, char **argv, t_option *opt)
 {
 	int i;
-	int j;
-	DIR *rep;
-	t_l *ar;
 
-	j = argc;
 	i = 1;
 	while (argc > i && argv[i][0] == '-')
 		i++;
@@ -170,6 +164,5 @@ void	start(int argc, char **argv, t_option *opt)
 		print_dir(".", opt);
 		return ;
 	}
-	ar = fill_ar(i, argc, argv);
-	sort_ar(ar, opt);
+	sort_ar(fill_ar(i, argc, argv), opt);
 }

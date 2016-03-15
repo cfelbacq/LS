@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/18 13:49:19 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/15 12:44:53 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/15 17:30:32 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ls.h"
@@ -53,15 +53,23 @@ t_l		*create_data(char *name)
 	DIR *rep;
 	t_l *data;
 	t_l *tmp;
+	t_l *new;
 
-	rep = opendir(name);
+	tmp = NULL;
+	if ((rep = opendir(name)) == NULL)
+	{
+		if (errno)
+		{
+			print_err(name);
+			return (NULL);
+		}
+	}
 	ent = readdir(rep);
 	name = ft_strjoin(name, "/");
 	data = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL);
 	tmp = data;
 	while ((ent = readdir(rep)) != NULL)
 	{
-		t_l *new;
 		new = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL);
 			if ((ft_strcmp(new->name, tmp->name)) < 0)
 				data = ins_start(data, new);
@@ -73,6 +81,7 @@ t_l		*create_data(char *name)
 			}
 			tmp = data;
 	}
+	closedir(rep);
 	return (data);
 }
 
@@ -80,10 +89,9 @@ void	print_dir(char *name, t_option *opt)
 {
 	t_l *data;
 	t_l *tmp;
-
-	name = ft_strjoin(name, "/");
 	if ((data = create_data(name)) == NULL)
 		return ;
+	name = ft_strjoin(name, "/");
 	tmp = data;
 	ls(tmp, opt);
 	while (tmp && opt->R == 1)
@@ -99,7 +107,7 @@ void	print_dir(char *name, t_option *opt)
 		}
 		tmp = tmp->next;
 	}
-	free_data(data);
+	free_data(&data, 1);
 }
 
 void	print_err(char *str)
