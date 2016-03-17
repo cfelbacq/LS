@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/15 12:07:09 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/17 15:51:12 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/17 18:30:33 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	free_data(t_l **data, int mode, t_option *opt)
 		free((*data)->mode);
 		free((*data)->user);
 		free((*data)->group_name);
+		free((*data)->time);
 	}
 	if ((*data)->next != NULL && mode == 1)
 		free_data(&(*data)->next, mode, opt);

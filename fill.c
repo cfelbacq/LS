@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:47:39 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/17 15:54:32 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/17 18:50:28 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,49 @@ void	fill_type(struct stat *buf, t_l *data)
 		data->type = 's';
 }
 
+char	*ft_readlink(char *path, int size)
+{
+	int r;
+	char *link_name;
+	
+	r = 0;
+	link_name = malloc(size + 1);
+	r = readlink(path, link_name, size + 1);
+	link_name[size] = '\0';
+	return (link_name);
+}
+
+char *get_time(char *time)
+{
+	char *time_print;
+	int i;
+	int count;
+	int j;
+
+	j = 0;
+	count = 0;
+	i = 0;
+	time_print = (char *)malloc(ft_strlen(time) + 1);
+	while (time[i] != ' ')
+		i++;
+	while (time[i] < '0' || time[i] > '9')
+	{
+		time_print[j] = time[i];
+		i++;
+		j++;
+	}
+	while (time[i] != '\n' && count < 2)
+	{
+		if (time[i] == ':')
+			count++;
+		time_print[j] = time[i];
+		j++;
+		i++;
+	}
+	time_print[j - 1] = '\0';
+	return (time_print);
+}
+
 t_l		*fill_data(char *path, char *name, t_l *next, t_option *opt)
 {
 	t_l			*data;
@@ -69,6 +112,10 @@ t_l		*fill_data(char *path, char *name, t_l *next, t_option *opt)
 	fill_type(&buf, data);
 	if (opt->l == 1)
 	{
+		if (data->type == 'l')
+			data->link = ft_readlink(path, buf.st_size);
+		data->time = (char *)ft_memalloc((ft_strlen(ctime(&buf.st_mtime))) + 1);
+		data->time = get_time(ft_strcpy(data->time, (ctime(&buf.st_mtime))));
 		getgrp = getgrgid(buf.st_gid);
 		get = getpwuid(buf.st_uid);
 		fill_mod(&buf, data);
