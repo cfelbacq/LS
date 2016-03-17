@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:47:39 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/17 18:50:28 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/17 21:49:41 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,25 +67,11 @@ char	*ft_readlink(char *path, int size)
 	return (link_name);
 }
 
-char *get_time(char *time)
+char	*print_hour(char *time, char *time_print, int j, int i)
 {
-	char *time_print;
-	int i;
 	int count;
-	int j;
 
-	j = 0;
 	count = 0;
-	i = 0;
-	time_print = (char *)malloc(ft_strlen(time) + 1);
-	while (time[i] != ' ')
-		i++;
-	while (time[i] < '0' || time[i] > '9')
-	{
-		time_print[j] = time[i];
-		i++;
-		j++;
-	}
 	while (time[i] != '\n' && count < 2)
 	{
 		if (time[i] == ':')
@@ -95,6 +81,58 @@ char *get_time(char *time)
 		i++;
 	}
 	time_print[j - 1] = '\0';
+	return (time_print);
+}
+
+char	*print_year(char *ttime, char *time_print, int j, int i)
+{
+	int k;
+
+	k = 0;
+	while (ttime[i] != ' ')
+	{
+		time_print[j] = ttime[i];
+		j++;
+		i++;
+	}
+	while (ttime[k] != '\n')
+		k++;
+	while (ttime[k] != ' ')
+		k--;
+	while (ttime[k] != '\n')
+	{
+		time_print[j] = ttime[k];
+		j++;
+		k++;
+	}
+	time_print[j] = '\0';
+	return (time_print);
+}
+
+char *get_time(char *ttime, t_stat *buf)
+{
+	char *time_print;
+	int i;
+	int count;
+	int j;
+
+	j = 0;
+	count = 0;
+	i = 0;
+	time_print = (char *)malloc(ft_strlen(ttime) + 1);
+	while (ttime[i] != ' ')
+		i++;
+	while (ttime[i] < '0' || ttime[i] > '9')
+	{
+		time_print[j] = ttime[i];
+		i++;
+		j++;
+	}
+	if (time(NULL) - buf->st_mtime > 15552000 ||\
+			time(NULL) - buf->st_mtime < 15552000)
+		time_print = print_year(ttime, time_print, j, i);
+	else
+		time_print = print_hour(ttime, time_print, j, i);
 	return (time_print);
 }
 
@@ -115,7 +153,8 @@ t_l		*fill_data(char *path, char *name, t_l *next, t_option *opt)
 		if (data->type == 'l')
 			data->link = ft_readlink(path, buf.st_size);
 		data->time = (char *)ft_memalloc((ft_strlen(ctime(&buf.st_mtime))) + 1);
-		data->time = get_time(ft_strcpy(data->time, (ctime(&buf.st_mtime))));
+		data->time = get_time(ft_strcpy(data->time, (ctime(&buf.st_mtime))),\
+				&buf);
 		getgrp = getgrgid(buf.st_gid);
 		get = getpwuid(buf.st_uid);
 		fill_mod(&buf, data);
