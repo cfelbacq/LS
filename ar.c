@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/15 10:57:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/17 15:52:58 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/17 16:05:47 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,29 +16,29 @@ static t_l		*fill_ar(int i, int argc, char **argv, t_option *opt)
 {
 	t_l *ar;
 	t_l *tmp;
-	t_l *new;
 
 	ar = fill_data(argv[i], argv[i], NULL, opt);
 	tmp = ar;
 	while (i < argc - 1)
 	{
 		i++;
+		t_l *new;
 		new = fill_data(argv[i], argv[i], NULL, opt);
-		if ((ft_strcmp(new->name, tmp->name)) < 0)
-			ar = ins_start(ar, new);
-		else
-		{
-			while (tmp->next != NULL &&\
-				ft_strcmp(new->name, (tmp->next)->name) > 0)
-			tmp = tmp->next;
-			ins_middle(tmp, new, tmp->next);
-		}
-		tmp = ar;
+			if ((ft_strcmp(new->name, tmp->name)) < 0)
+				ar = ins_start(ar, new);
+			else
+			{
+				while (tmp->next != NULL && ft_strcmp(new->name, (tmp->next)->name) > 0)
+					tmp = tmp->next;
+				ins_middle(tmp, new, tmp->next);
+			}
+			tmp = ar;
 	}
 	return (ar);
 }
 
-static void		init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
+
+static void	init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
 {
 	t_l *tmp;
 	t_l *rep;
@@ -47,8 +47,9 @@ static void		init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
 	i = 0;
 	tmp = ar;
 	rep = NULL;
-	while (tmp)
+	while(tmp)
 	{
+
 		if (tmp->type == 'd')
 		{
 			if (nb_file > 0 || nb_rep > 1 || opt->err > 0)
@@ -65,12 +66,12 @@ static void		init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
 	}
 }
 
-static void		init_file(t_l *ar, t_option *opt, int *nb_file, int *nb_rep)
+static void	init_file(t_l *ar, t_option *opt, int *nb_file, int *nb_rep)
 {
 	t_l *tmp;
 
 	tmp = ar;
-	while (tmp)
+	while(tmp)
 	{
 		if (tmp->type != 'd')
 		{
@@ -86,7 +87,7 @@ static void		init_file(t_l *ar, t_option *opt, int *nb_file, int *nb_rep)
 	}
 }
 
-static	t_l		*remove_link(t_l *ar, char *name, t_option *opt)
+t_l	*remove_link(t_l *ar, char *name, t_option *opt)
 {
 	t_l *tmp1;
 	t_l *tmp2;
@@ -112,7 +113,7 @@ static	t_l		*remove_link(t_l *ar, char *name, t_option *opt)
 	return (ar);
 }
 
-static	void	print_err_ar(char *str)
+void	print_err_ar(char *str)
 {
 	ft_putstr("ls : ");
 	ft_putstr(str);
@@ -120,10 +121,10 @@ static	void	print_err_ar(char *str)
 	perror("");
 }
 
-static	t_l		*check_file(t_l *ar, t_option *opt)
+t_l	*check_file(t_l *ar, t_option *opt)
 {
-	t_l		*tmp;
-	t_stat	buf;
+	t_l *tmp;
+	struct stat buf;
 
 	tmp = ar;
 	while (tmp != NULL)
@@ -139,7 +140,7 @@ static	t_l		*check_file(t_l *ar, t_option *opt)
 	return (ar);
 }
 
-static void		sort_ar(t_l *ar, t_option *opt)
+static void	sort_ar(t_l *ar, t_option *opt)
 {
 	int nb_file;
 	int nb_rep;
@@ -153,7 +154,7 @@ static void		sort_ar(t_l *ar, t_option *opt)
 	init_rep(ar, opt, nb_file, nb_rep);
 }
 
-void			start(int argc, char **argv, t_option *opt)
+void	start(int argc, char **argv, t_option *opt)
 {
 	int i;
 

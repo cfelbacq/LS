@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/02 13:27:10 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/16 11:51:33 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/17 15:50:04 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef LS_H
@@ -17,13 +17,17 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <dirent.h>
-#include "../ls/libft/libft.h"
+#include "../libft/libft.h"
 #include <stdio.h>
 #include <time.h>
 #include <pwd.h>
 #include <grp.h>
 #include <errno.h>
 
+typedef struct stat t_stat;
+typedef struct passwd t_passwd;
+typedef struct group t_group;
+typedef struct dirent t_dirent;
 typedef	struct	s_l
 {
 	char	*mode;
@@ -44,11 +48,13 @@ typedef struct	s_option
 	int a;
 	int r;
 	int t;
+	int err;
 }				t_option;
 
+void	free_double(char **tab);
 void	fill_mod(struct stat *buf, t_l *data);
 void	fill_type(struct stat *buf, t_l *data);
-t_l		*fill_data(char *path, char *name, t_l *next);
+t_l		*fill_data(char *path, char *name, t_l *next, t_option *opt);
 void	print_l(t_l *data, t_option *opt);
 void	print_path(char *path);
 void	print_opt(t_option *opt);
@@ -59,5 +65,5 @@ t_l		*ins_start(t_l *begin, t_l *new);
 void	ins_middle(t_l *prev, t_l *new, t_l *next);
 void	print_dir(char *name, t_option *opt);
 void	print_err(char *str);
-void	free_data(t_l **data, int mode);
+void	free_data(t_l **data, int mode, t_option *opt);
 #endif

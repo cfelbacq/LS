@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:54:18 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/17 15:50:02 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/17 16:05:32 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	print_l(t_l *data, t_option *opt)
 		ft_putnbr(data->nb_octet);
 		ft_putchar(' ');
 		ft_putstr(data->name);
+		if (data->type == 'l')
+			ft_putstr(" -> ");
 		ft_putchar('\n');
 	}
 }

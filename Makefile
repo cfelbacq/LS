@@ -6,21 +6,25 @@
 #    By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/10 11:59:46 by cfelbacq          #+#    #+#              #
-#    Updated: 2016/03/10 12:04:33 by cfelbacq         ###   ########.fr        #
+#    Updated: 2016/03/16 11:54:08 by cfelbacq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ft_ls
 
-SOURCE = main.c \
-		 option.c \
-		 print.c \
-		 fill.c
+SOURCE = SRC/main.c \
+		 SRC/option.c \
+		 SRC/print.c \
+		 SRC/fill.c \
+		 SRC/ar.c \
+		 SRC/free.c 
 
 OBJ = main.o \
 	  option.o \
 	  print.o \
-	  fill.o
+	  fill.o \
+	  ar.o \
+	  free.o
 
 LIB = libft/libft.a
 

@@ -6,14 +6,14 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/18 13:49:19 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/17 15:49:56 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/17 16:01:29 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ls.h"
 
 void	ls(t_l *data, t_option *opt)
 {
-	while (data->next != NULL)
+	while (data != NULL)
 	{
 		if (!(opt->a == 0 && data->name[0] == '.'))
 		{
@@ -23,13 +23,6 @@ void	ls(t_l *data, t_option *opt)
 				print_l(data, opt);
 		}
 		data = data->next;
-	}
-	if (!(opt->a == 0 && data->name[0] == '.'))
-	{
-		if (opt->l != 1)
-			ft_putendl(data->name);
-		else
-			print_l(data, opt);
 	}
 }
 
