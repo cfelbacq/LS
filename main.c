@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/18 13:49:19 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/15 17:30:32 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/17 15:49:56 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ls.h"
@@ -47,9 +47,9 @@ void	ins_middle(t_l *prev, t_l *new, t_l *next)
 	new->next = next;
 }
 
-t_l		*create_data(char *name)
+t_l		*create_data(char *name, t_option *opt)
 {
-	struct dirent *ent;
+	t_dirent *ent;
 	DIR *rep;
 	t_l *data;
 	t_l *tmp;
@@ -66,11 +66,11 @@ t_l		*create_data(char *name)
 	}
 	ent = readdir(rep);
 	name = ft_strjoin(name, "/");
-	data = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL);
+	data = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL, opt);
 	tmp = data;
 	while ((ent = readdir(rep)) != NULL)
 	{
-		new = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL);
+		new = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL, opt);
 			if ((ft_strcmp(new->name, tmp->name)) < 0)
 				data = ins_start(data, new);
 			else
@@ -89,7 +89,7 @@ void	print_dir(char *name, t_option *opt)
 {
 	t_l *data;
 	t_l *tmp;
-	if ((data = create_data(name)) == NULL)
+	if ((data = create_data(name, opt)) == NULL)
 		return ;
 	name = ft_strjoin(name, "/");
 	tmp = data;
@@ -107,15 +107,24 @@ void	print_dir(char *name, t_option *opt)
 		}
 		tmp = tmp->next;
 	}
-	free_data(&data, 1);
+	free_data(&data, 1, opt);
 }
 
 void	print_err(char *str)
 {
-			ft_putstr("ls: ");
-			ft_putstr(str);
-			ft_putstr(": ");
-			perror("");
+	char **tab;
+	int i;
+
+	i = 0;
+	tab = ft_strsplit(str, '/');
+	while (tab[i] != NULL)
+		i++;
+	i--;
+	ft_putstr("ls: ");
+	ft_putstr(tab[i]);
+	ft_putstr(": ");
+	perror("");
+	free_double(tab);
 }
 
 int	main(int argc, char **argv)

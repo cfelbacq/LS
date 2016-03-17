@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:57:24 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/10 11:59:56 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/17 15:41:54 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ void	check_opt(int argc, t_option *opt, char **str)
 				opt->R = 1;
 			else if (str[j][i] == 'a')
 				opt->a = 1;
-			else if(str[j][i] == 'r')
+			else if (str[j][i] == 'r')
 				opt->r = 1;
-			else if(str[j][i] == 't')
+			else if (str[j][i] == 't')
 				opt->t = 1;
 			i++;
 		}
@@ -48,4 +48,5 @@ void	init_option(t_option *opt)
 	opt->a = 0;
 	opt->r = 0;
 	opt->t = 0;
+	opt->err = 0;
 }

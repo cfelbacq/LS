@@ -6,39 +6,39 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/15 10:57:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/15 17:31:28 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/17 15:52:58 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-static t_l		*fill_ar(int i, int argc, char **argv)
+static t_l		*fill_ar(int i, int argc, char **argv, t_option *opt)
 {
 	t_l *ar;
 	t_l *tmp;
+	t_l *new;
 
-	ar = fill_data(argv[i], argv[i], NULL);
+	ar = fill_data(argv[i], argv[i], NULL, opt);
 	tmp = ar;
 	while (i < argc - 1)
 	{
 		i++;
-		t_l *new;
-		new = fill_data(argv[i], argv[i], NULL);
-			if ((ft_strcmp(new->name, tmp->name)) < 0)
-				ar = ins_start(ar, new);
-			else
-			{
-				while (tmp->next != NULL && ft_strcmp(new->name, (tmp->next)->name) > 0)
-					tmp = tmp->next;
-				ins_middle(tmp, new, tmp->next);
-			}
-			tmp = ar;
+		new = fill_data(argv[i], argv[i], NULL, opt);
+		if ((ft_strcmp(new->name, tmp->name)) < 0)
+			ar = ins_start(ar, new);
+		else
+		{
+			while (tmp->next != NULL &&\
+				ft_strcmp(new->name, (tmp->next)->name) > 0)
+			tmp = tmp->next;
+			ins_middle(tmp, new, tmp->next);
+		}
+		tmp = ar;
 	}
 	return (ar);
 }
 
-
-static void	init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
+static void		init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
 {
 	t_l *tmp;
 	t_l *rep;
@@ -47,11 +47,11 @@ static void	init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
 	i = 0;
 	tmp = ar;
 	rep = NULL;
-	while(tmp)
+	while (tmp)
 	{
 		if (tmp->type == 'd')
 		{
-			if (nb_file > 0 || nb_rep > 1)
+			if (nb_file > 0 || nb_rep > 1 || opt->err > 0)
 			{
 				if (nb_file > 0 || i > 0)
 					ft_putchar('\n');
@@ -65,12 +65,12 @@ static void	init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
 	}
 }
 
-static void	init_file(t_l *ar, t_option *opt, int *nb_file, int *nb_rep)
+static void		init_file(t_l *ar, t_option *opt, int *nb_file, int *nb_rep)
 {
 	t_l *tmp;
 
 	tmp = ar;
-	while(tmp)
+	while (tmp)
 	{
 		if (tmp->type != 'd')
 		{
@@ -86,73 +86,74 @@ static void	init_file(t_l *ar, t_option *opt, int *nb_file, int *nb_rep)
 	}
 }
 
-t_l	*remove_link(t_l *ar, t_l *tmp, int i)
+static	t_l		*remove_link(t_l *ar, char *name, t_option *opt)
 {
+	t_l *tmp1;
 	t_l *tmp2;
-	
-	if(tmp != NULL && tmp->next != NULL)
+
+	tmp2 = NULL;
+	tmp1 = ar;
+	while (tmp1 != NULL && ft_strcmp(tmp1->name, name) != 0)
 	{
-		tmp2 = tmp->next;
-		tmp->next = tmp2->next;
-		free_data(&tmp2, 0);
+		tmp2 = tmp1;
+		tmp1 = tmp1->next;
 	}
-	else if (tmp != NULL && tmp->next == NULL)
-	{
-		free(ar);
-		ar = NULL;
-	}
-	else
+	if (tmp2 == NULL)
 	{
 		tmp2 = ar;
 		ar = ar->next;
-		free_data(&tmp2, 0);
+		free_data(&tmp2, 0, opt);
+	}
+	else
+	{
+		tmp2->next = tmp1->next;
+		free_data(&tmp1, 0, opt);
 	}
 	return (ar);
 }
 
-static t_l *check_err(t_l *ar)
+static	void	print_err_ar(char *str)
 {
-	int i;
-	DIR *rep;
-	t_l *tmp;
-	t_l *tmp2;
-	struct stat buf;
+	ft_putstr("ls : ");
+	ft_putstr(str);
+	ft_putstr(": ");
+	perror("");
+}
 
-	i = 0;
+static	t_l		*check_file(t_l *ar, t_option *opt)
+{
+	t_l		*tmp;
+	t_stat	buf;
+
 	tmp = ar;
-	tmp2 = NULL;
-	while (tmp)
+	while (tmp != NULL)
 	{
-		i++;
-		stat(tmp->name, &buf);
-		if (errno == ENOENT || errno == EACCES || errno == EBADF)
+		if (lstat(tmp->name, &buf) == -1)
 		{
-			if ((rep = opendir(tmp->name)) == NULL)
-			{
-				print_err(tmp->name);
-				ar = remove_link(tmp2, ar, i);
-			}
+			opt->err += 1;
+			print_err_ar(tmp->name);
+			ar = remove_link(ar, tmp->name, opt);
 		}
-		tmp2 = tmp;
 		tmp = tmp->next;
 	}
 	return (ar);
 }
 
-static void	sort_ar(t_l *ar, t_option *opt)
+static void		sort_ar(t_l *ar, t_option *opt)
 {
 	int nb_file;
 	int nb_rep;
+
 	nb_file = 0;
 	nb_rep = 0;
-	ar = check_err(ar);
+	ar = check_file(ar, opt);
 	if (ar == NULL)
 		exit(0) ;
 	init_file(ar, opt, &nb_file, &nb_rep);
 	init_rep(ar, opt, nb_file, nb_rep);
 }
 
-void	start(int argc, char **argv, t_option *opt)
+void			start(int argc, char **argv, t_option *opt)
 {
 	int i;
 
@@ -164,5 +165,5 @@ void	start(int argc, char **argv, t_option *opt)
 		print_dir(".", opt);
 		return ;
 	}
-	sort_ar(fill_ar(i, argc, argv), opt);
+	sort_ar(fill_ar(i, argc, argv, opt), opt);
 }

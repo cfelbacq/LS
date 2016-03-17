@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/02 13:27:10 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/10 14:24:42 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/16 11:51:33 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef LS_H
@@ -17,7 +17,7 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <dirent.h>
-#include "libft/libft.h"
+#include "../ls/libft/libft.h"
 #include <stdio.h>
 #include <time.h>
 #include <pwd.h>
@@ -54,5 +54,10 @@ void	print_path(char *path);
 void	print_opt(t_option *opt);
 void	check_opt(int argc, t_option *opt, char **str);
 void	init_option(t_option *opt);
-
+void	start(int argc, char **argv, t_option *opt);
+t_l		*ins_start(t_l *begin, t_l *new);
+void	ins_middle(t_l *prev, t_l *new, t_l *next);
+void	print_dir(char *name, t_option *opt);
+void	print_err(char *str);
+void	free_data(t_l **data, int mode);
 #endif
