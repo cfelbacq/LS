@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/15 12:07:09 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/17 18:30:33 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/18 15:46:46 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 //mode == 1 free_list mode != 1 free_maillon
 void	free_data(t_l **data, int mode, t_option *opt)
 {
+	free((*data)->path);
 	free((*data)->name);
 	if (opt->l == 1)
 	{

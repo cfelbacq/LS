@@ -6,11 +6,24 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:54:18 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/17 18:43:34 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/18 15:20:07 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
+
+void	print_err_ar(char *str)
+{
+	ft_putstr("ls: ");
+	ft_putstr(str);
+	ft_putstr(": ");
+	perror("");
+}
+
+void	put_double_space(void)
+{
+	ft_putstr("  ");
+}
 
 void	print_l(t_l *data, t_option *opt)
 {
@@ -18,15 +31,14 @@ void	print_l(t_l *data, t_option *opt)
 	{
 		ft_putchar(data->type);
 		ft_putstr(data->mode);
-		ft_putchar(' ');
+		put_double_space();
 		ft_putnbr(data->nb_link);
 		ft_putchar(' ');
 		ft_putstr(data->user);
-		ft_putchar(' ');
+		put_double_space();
 		ft_putstr(data->group_name);
-		ft_putchar(' ');
+		put_double_space();
 		ft_putnbr(data->nb_octet);
-		ft_putchar(' ');
 		ft_putstr(data->time);
 		ft_putchar(' ');
 		ft_putstr(data->name);
@@ -64,4 +76,21 @@ void	print_opt(t_option *opt)
 	ft_putstr("t : ");
 	ft_putnbr(opt->t);
 	ft_putchar('\n');
+}
+
+void	print_err(char *str)
+{
+	char **tab;
+	int i;
+
+	i = 0;
+	tab = ft_strsplit(str, '/');
+	while (tab[i] != NULL)
+		i++;
+	i--;
+	ft_putstr("ls: ");
+	ft_putstr(tab[i]);
+	ft_putstr(": ");
+	perror("");
+	free_double(tab);
 }

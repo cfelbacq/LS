@@ -6,68 +6,13 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:47:39 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/17 21:49:41 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/18 15:48:49 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-void	fill_mod(struct stat *buf, t_l *data)
-{
-	data->mode = (char *)ft_memalloc(sizeof(char) * 10);
-	ft_memset(data->mode, '-', 9);
-	data->mode[9] = '\0';
-	if (buf->st_mode & S_IRUSR)
-		data->mode[0] = 'r';
-	if (buf->st_mode & S_IWUSR)
-		data->mode[1] = 'w';
-	if (buf->st_mode & S_IXUSR)
-		data->mode[2] = 'x';
-	if (buf->st_mode & S_IRGRP)
-		data->mode[3] = 'r';
-	if (buf->st_mode & S_IWGRP)
-		data->mode[4] = 'w';
-	if (buf->st_mode & S_IXGRP)
-		data->mode[5] = 'x';
-	if (buf->st_mode & S_IROTH)
-		data->mode[6] = 'r';
-	if (buf->st_mode & S_IWOTH)
-		data->mode[7] = 'w';
-	if (buf->st_mode & S_IXOTH)
-		data->mode[8] = 'x';
-}
-
-void	fill_type(struct stat *buf, t_l *data)
-{
-	if ((buf->st_mode & S_IFMT) == S_IFDIR)
-		data->type = 'd';
-	else if ((buf->st_mode & S_IFMT) == S_IFREG)
-		data->type = '-';
-	else if ((buf->st_mode & S_IFMT) == S_IFBLK)
-		data->type = 'b';
-	else if ((buf->st_mode & S_IFMT) == S_IFCHR)
-		data->type = 'c';
-	else if ((buf->st_mode & S_IFMT) == S_IFLNK)
-		data->type = 'l';
-	else if ((buf->st_mode & S_IFMT) == S_IFIFO)
-		data->type = 'p';
-	else if ((buf->st_mode & S_IFMT) == S_IFSOCK)
-		data->type = 's';
-}
-
-char	*ft_readlink(char *path, int size)
-{
-	int r;
-	char *link_name;
-	
-	r = 0;
-	link_name = malloc(size + 1);
-	r = readlink(path, link_name, size + 1);
-	link_name[size] = '\0';
-	return (link_name);
-}
-
-char	*print_hour(char *time, char *time_print, int j, int i)
+static	char	*fill_hour(char *time, char *time_print, int j, int i)
 {
 	int count;
 
@@ -84,7 +29,7 @@ char	*print_hour(char *time, char *time_print, int j, int i)
 	return (time_print);
 }
 
-char	*print_year(char *ttime, char *time_print, int j, int i)
+static	char	*fill_year(char *ttime, char *time_print, int j, int i)
 {
 	int k;
 
@@ -109,7 +54,7 @@ char	*print_year(char *ttime, char *time_print, int j, int i)
 	return (time_print);
 }
 
-char *get_time(char *ttime, t_stat *buf)
+static	char *get_time(char *ttime, t_stat *buf)
 {
 	char *time_print;
 	int i;
@@ -128,11 +73,10 @@ char *get_time(char *ttime, t_stat *buf)
 		i++;
 		j++;
 	}
-	if (time(NULL) - buf->st_mtime > 15552000 ||\
-			time(NULL) - buf->st_mtime < 15552000)
-		time_print = print_year(ttime, time_print, j, i);
+	if (time(NULL) - buf->st_mtime > 15552000) //6mois dans le passe
+		time_print = fill_year(ttime, time_print, j, i);
 	else
-		time_print = print_hour(ttime, time_print, j, i);
+		time_print = fill_hour(ttime, time_print, j, i);
 	return (time_print);
 }
 
@@ -145,6 +89,8 @@ t_l		*fill_data(char *path, char *name, t_l *next, t_option *opt)
 
 	data = (t_l *)ft_memalloc(sizeof(t_l));
 	lstat(path, &buf);
+	data->path = (char *)ft_memalloc(sizeof(char) * ft_strlen(path) + 1);
+	data->path = ft_strcpy(data->path, path);
 	data->name = (char *)ft_memalloc(sizeof(char) * ft_strlen(name) + 1);
 	data->name = ft_strcpy(data->name, name);
 	fill_type(&buf, data);
@@ -171,13 +117,4 @@ t_l		*fill_data(char *path, char *name, t_l *next, t_option *opt)
 	return (data);
 }
 
-t_list	*fill_str(char *str)
-{
-	t_list *argv;
 
-	argv = (t_list *)ft_memalloc(sizeof(t_list));
-	argv->content = (char *)ft_memalloc(sizeof(char) * ft_strlen(str) + 1);
-	argv->content = ft_strcpy(argv->content, str);
-	argv->next = NULL;
-	return (argv);
-}

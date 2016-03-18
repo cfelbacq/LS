@@ -6,10 +6,31 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/18 13:49:19 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/17 20:27:25 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/18 15:46:43 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ls.h"
+
+int	total(t_l *data)
+{
+	t_l *tmp;
+	t_stat buf;
+	int total;
+	int count;
+
+	count = 0;
+	total = 0;
+	tmp = data;
+	while (tmp)
+	{
+		lstat(tmp->path, &buf);
+		ft_putnbr(buf.st_size / 512);
+		ft_putchar('\n');
+		total = total + buf.st_size;
+		tmp = tmp->next;
+	}
+	return ((total / 512));
+}
 
 void	ls(t_l *data, t_option *opt)
 {
@@ -26,6 +47,7 @@ void	ls(t_l *data, t_option *opt)
 			{
 				if (i == 0)
 				{
+					data->total = total(data);
 					ft_putstr("total ");
 					ft_putnbr(data->total);
 					ft_putchar('\n');
@@ -36,20 +58,6 @@ void	ls(t_l *data, t_option *opt)
 		}
 		data = data->next;
 	}
-}
-
-t_l		*ins_start(t_l *begin, t_l *new)
-{
-	new->next = begin;
-	begin = new;
-	return (begin);
-}
-
-void	ins_middle(t_l *prev, t_l *new, t_l *next)
-{
-	prev->next = new;
-	if (next != NULL)
-	new->next = next;
 }
 
 t_l		*create_data(char *name, t_option *opt)
@@ -114,12 +122,11 @@ void	print_dir(char *name, t_option *opt)
 	int i;
 	t_l *data;
 	t_l *tmp;
+
 	i = 0;
 	if ((data = create_data(name, opt)) == NULL)
 		return ;
-	while (name[i] != '\0')
-		i++;
-	if (name[i - 1] != '/')
+	if (name[ft_strlen(name) - 1] != '/')
 	name = ft_strjoin(name, "/");
 	if (opt->r == 1)
 		data = reverse(data);
@@ -139,23 +146,6 @@ void	print_dir(char *name, t_option *opt)
 		tmp = tmp->next;
 	}
 	free_data(&data, 1, opt);
-}
-
-void	print_err(char *str)
-{
-	char **tab;
-	int i;
-
-	i = 0;
-	tab = ft_strsplit(str, '/');
-	while (tab[i] != NULL)
-		i++;
-	i--;
-	ft_putstr("ls: ");
-	ft_putstr(tab[i]);
-	ft_putstr(": ");
-	perror("");
-	free_double(tab);
 }
 
 int	main(int argc, char **argv)

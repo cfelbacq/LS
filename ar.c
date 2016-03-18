@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/15 10:57:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/17 16:05:47 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/18 15:07:58 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,57 +37,7 @@ static t_l		*fill_ar(int i, int argc, char **argv, t_option *opt)
 	return (ar);
 }
 
-
-static void	init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
-{
-	t_l *tmp;
-	t_l *rep;
-	int i;
-
-	i = 0;
-	tmp = ar;
-	rep = NULL;
-	while(tmp)
-	{
-
-		if (tmp->type == 'd')
-		{
-			if (nb_file > 0 || nb_rep > 1 || opt->err > 0)
-			{
-				if (nb_file > 0 || i > 0)
-					ft_putchar('\n');
-				ft_putstr(tmp->name);
-				ft_putendl(":");
-			}
-			print_dir(tmp->name, opt);
-			i++;
-		}
-		tmp = tmp->next;
-	}
-}
-
-static void	init_file(t_l *ar, t_option *opt, int *nb_file, int *nb_rep)
-{
-	t_l *tmp;
-
-	tmp = ar;
-	while(tmp)
-	{
-		if (tmp->type != 'd')
-		{
-			*nb_file += 1;
-			if (opt->l == 1)
-				print_l(tmp, opt);
-			else
-				ft_putendl(tmp->name);
-		}
-		else
-			*nb_rep += 1;
-		tmp = tmp->next;
-	}
-}
-
-t_l	*remove_link(t_l *ar, char *name, t_option *opt)
+static	t_l	*remove_link(t_l *ar, char *name, t_option *opt)
 {
 	t_l *tmp1;
 	t_l *tmp2;
@@ -113,15 +63,7 @@ t_l	*remove_link(t_l *ar, char *name, t_option *opt)
 	return (ar);
 }
 
-void	print_err_ar(char *str)
-{
-	ft_putstr("ls : ");
-	ft_putstr(str);
-	ft_putstr(": ");
-	perror("");
-}
-
-t_l	*check_file(t_l *ar, t_option *opt)
+static	t_l	*check_file(t_l *ar, t_option *opt)
 {
 	t_l *tmp;
 	struct stat buf;
@@ -148,10 +90,20 @@ static void	sort_ar(t_l *ar, t_option *opt)
 	nb_file = 0;
 	nb_rep = 0;
 	ar = check_file(ar, opt);
+	if (opt->r == 1)
+		ar = reverse(ar);
 	if (ar == NULL)
 		exit(0) ;
 	init_file(ar, opt, &nb_file, &nb_rep);
 	init_rep(ar, opt, nb_file, nb_rep);
+}
+
+int		check_flag(char *str)
+{
+	if(str[0] == '-' && str[1] != '\0')
+		return (1);
+	else
+		return (0);
 }
 
 void	start(int argc, char **argv, t_option *opt)
@@ -159,7 +111,7 @@ void	start(int argc, char **argv, t_option *opt)
 	int i;
 
 	i = 1;
-	while (argc > i && argv[i][0] == '-')
+	while (argc > i && argv[i][0] == '-' && check_flag(argv[i]) == 1)
 		i++;
 	if (argc == i)
 	{
