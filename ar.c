@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/15 10:57:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/18 15:07:58 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/18 16:48:28 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,10 @@ void	start(int argc, char **argv, t_option *opt)
 	int i;
 
 	i = 1;
-	while (argc > i && argv[i][0] == '-' && check_flag(argv[i]) == 1)
+	while (argc > i && argv[i][0] == '-' && argv[i][1] != '-' &&\
+			check_flag(argv[i]) == 1)
+		i++;
+	if (i < argc && ft_strcmp("--", argv[i]) == 0)
 		i++;
 	if (argc == i)
 	{

@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/18 13:49:19 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/18 15:46:43 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/18 16:56:27 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ls.h"
@@ -24,8 +24,8 @@ int	total(t_l *data)
 	while (tmp)
 	{
 		lstat(tmp->path, &buf);
-		ft_putnbr(buf.st_size / 512);
-		ft_putchar('\n');
+	//	ft_putnbr(buf.st_size / 512);
+	//	ft_putchar('\n');
 		total = total + buf.st_size;
 		tmp = tmp->next;
 	}

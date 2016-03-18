@@ -6,22 +6,33 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:57:24 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/17 15:41:54 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/18 17:23:49 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
+
+void	print_ill_opt(char c)
+{
+	ft_putstr("ls: illegal option -- ");
+	ft_putchar(c);
+	ft_putchar('\n');
+	ft_putendl("usage: ft_ls [lRart] [file ...]");
+	exit (0);
+}
 
 void	check_opt(int argc, t_option *opt, char **str)
 {
 	int i;
 	int j;
 
-	j = 1;
-	while (j < argc)
+	j = 0;
+	while (++j < argc)
 	{
-		i = 0;
-		while (str[j][i] != 0 && str[j][0] == '-')
+		i = -1;
+			if (str[j][1] == '-' || str[j][0] != '-')
+				return ;
+		while (str[j][++i] != '\0')
 		{
 			if (str[j][i] == 'l')
 				opt->l = 1;
@@ -33,11 +44,9 @@ void	check_opt(int argc, t_option *opt, char **str)
 				opt->r = 1;
 			else if (str[j][i] == 't')
 				opt->t = 1;
-			i++;
+			//else if (str[j][i] != '-')
+			//	print_ill_opt(str[j][i]);
 		}
-		if (str[j][0] != '-')
-			return ;
-		j++;
 	}
 }
 
