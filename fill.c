@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:47:39 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/18 15:48:49 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/19 14:08:17 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ static	char *get_time(char *ttime, t_stat *buf)
 		i++;
 		j++;
 	}
-	if (time(NULL) - buf->st_mtime > 15552000) //6mois dans le passe
+	if (time(NULL) - buf->st_mtime > 15552000 \
+			|| time(NULL) - buf->st_mtime < -15552000)
 		time_print = fill_year(ttime, time_print, j, i);
 	else
 		time_print = fill_hour(ttime, time_print, j, i);

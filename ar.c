@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/15 10:57:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/18 16:48:28 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/19 17:10:31 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ static t_l		*fill_ar(int i, int argc, char **argv, t_option *opt)
 {
 	t_l *ar;
 	t_l *tmp;
-
+	//struc timespec tmp1;
+	//struc timespec tmp2;
 	ar = fill_data(argv[i], argv[i], NULL, opt);
 	tmp = ar;
 	while (i < argc - 1)
@@ -24,15 +25,64 @@ static t_l		*fill_ar(int i, int argc, char **argv, t_option *opt)
 		i++;
 		t_l *new;
 		new = fill_data(argv[i], argv[i], NULL, opt);
-			if ((ft_strcmp(new->name, tmp->name)) < 0)
+			if ((ft_strcmp(new->name, tmp->name)) <= 0)
 				ar = ins_start(ar, new);
 			else
 			{
-				while (tmp->next != NULL && ft_strcmp(new->name, (tmp->next)->name) > 0)
+				while (tmp->next != NULL && ft_strcmp(new->name, (tmp->next)->name) >= 0)
 					tmp = tmp->next;
 				ins_middle(tmp, new, tmp->next);
 			}
 			tmp = ar;
+	}
+	return (ar);
+}
+
+int sort_time(t_l *new, t_l *tmp)
+{
+	t_stat buf;
+	t_stat buf1;
+
+
+	lstat(new->name, &buf);
+	lstat(tmp->name, &buf1);
+	if ((buf.st_mtimespec).tv_sec == (buf1.st_mtimespec).tv_sec)
+	{
+		if ((buf.st_mtimespec).tv_nsec > (buf1.st_mtimespec).tv_nsec)
+			return (0);
+		if ((buf.st_mtimespec).tv_nsec < (buf1.st_mtimespec).tv_nsec)
+			return (1);
+		if (ft_strcmp(new->name, tmp->name) <= 0)
+			return (0);
+		return (1);
+	}
+	if((buf.st_mtimespec).tv_sec > (buf1.st_mtimespec).tv_sec)
+		return (0);
+	return (1);
+}
+
+static	t_l	*fill_t_ar(int i, int argc, char **argv, t_option *opt)
+{
+	t_l	*ar;
+	t_l *tmp;
+	t_l *new;
+
+	new = NULL;
+	ar = fill_data(argv[i], argv[i], NULL, opt);
+	tmp = ar;
+	while (i < argc - 1)
+	{
+		i++;
+		new = fill_data(argv[i], argv[i], NULL, opt);
+			if (sort_time(new, tmp) == 0)
+				ar = ins_start(ar, new);
+		else
+		{
+			while (tmp->next != NULL && sort_time(new, tmp->next) == 1)
+				tmp = tmp->next;
+			ins_middle(tmp, new, tmp->next);
+		}
+		tmp = ar;
 	}
 	return (ar);
 }
@@ -98,7 +148,7 @@ static void	sort_ar(t_l *ar, t_option *opt)
 	init_rep(ar, opt, nb_file, nb_rep);
 }
 
-int		check_flag(char *str)
+static	int		check_flag(char *str)
 {
 	if(str[0] == '-' && str[1] != '\0')
 		return (1);
@@ -121,5 +171,8 @@ void	start(int argc, char **argv, t_option *opt)
 		print_dir(".", opt);
 		return ;
 	}
-	sort_ar(fill_ar(i, argc, argv, opt), opt);
+	if (opt->t == 1)
+		sort_ar(fill_t_ar(i, argc, argv, opt), opt);
+	else
+		sort_ar(fill_ar(i, argc, argv,opt), opt);
 }

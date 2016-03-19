@@ -6,10 +6,20 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/18 13:49:19 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/18 16:56:27 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/19 17:28:43 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ls.h"
+
+int	round_total(float nb)
+{
+	int nb_div;
+
+	nb_div = nb / 512;
+	if (nb / 512 > nb_div)
+		return (nb / 512 + 1);
+	return (nb / 512);
+}
 
 int	total(t_l *data)
 {
@@ -24,18 +34,18 @@ int	total(t_l *data)
 	while (tmp)
 	{
 		lstat(tmp->path, &buf);
-	//	ft_putnbr(buf.st_size / 512);
-	//	ft_putchar('\n');
-		total = total + buf.st_size;
+		total = total + round_total(buf.st_size);
 		tmp = tmp->next;
 	}
-	return ((total / 512));
+	return (total);
 }
 
 void	ls(t_l *data, t_option *opt)
 {
 	int i;
+	int total_print;
 
+	total_print = 0;
 	i = 0;
 	while (data != NULL)
 	{
@@ -47,9 +57,9 @@ void	ls(t_l *data, t_option *opt)
 			{
 				if (i == 0)
 				{
-					data->total = total(data);
+					total_print = total(data);
 					ft_putstr("total ");
-					ft_putnbr(data->total);
+					ft_putnbr(total_print);
 					ft_putchar('\n');
 				}
 				i++;
@@ -60,15 +70,95 @@ void	ls(t_l *data, t_option *opt)
 	}
 }
 
-t_l		*create_data(char *name, t_option *opt)
+int	sort_c_t_data(char *name, t_l *tmp)
+{
+	t_stat buf;
+	t_stat buf1;
+
+	lstat(name, &buf);
+	lstat(tmp->name, &buf1);
+	ft_putstr(name);
+	ft_putstr("  ");
+	ft_putnbr((buf.st_mtimespec).tv_nsec);
+	ft_putstr("  ");
+	ft_putstr(tmp->name);
+	ft_putstr("  ");
+	ft_putnbr((buf1.st_mtimespec).tv_nsec);
+	ft_putstr("  \n");
+	if ((buf.st_mtimespec).tv_sec == (buf1.st_mtimespec).tv_sec)
+	{
+		if ((buf.st_mtimespec).tv_nsec > (buf1.st_mtimespec).tv_nsec)
+			return (0);
+		if ((buf.st_mtimespec).tv_nsec < (buf1.st_mtimespec).tv_nsec)
+			return (1);
+		if (ft_strcmp(name, tmp->name) < 0)
+			return (0);
+		return (1);
+	}
+	if((buf.st_mtimespec).tv_sec > (buf1.st_mtimespec).tv_sec)
+		return (0);
+	return (1);
+}
+
+static t_l		*fill_c_t_data(DIR *rep, char *name, t_option *opt)
 {
 	t_dirent *ent;
-	DIR *rep;
 	t_l *data;
 	t_l *tmp;
 	t_l *new;
 
-	tmp = NULL;
+	ent = readdir(rep);
+	name = ft_strjoin(name, "/");
+	data = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL, opt);
+	tmp = data;
+	while ((ent = readdir(rep)) != NULL)
+	{
+		new = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL, opt);
+		if (sort_c_t_data(ent->d_name, tmp) == 0)
+			data = ins_start(data, new);
+		else
+		{
+			while (tmp->next != NULL && sort_c_t_data(ent->d_name, tmp->next) == 1)
+				tmp = tmp->next;
+			ins_middle(tmp, new, tmp->next);
+		}
+		tmp = data;
+	}
+	return (data);
+}
+
+static t_l		*fill_c_data(DIR *rep, char *name, t_option *opt)
+{
+	t_dirent *ent;
+	t_l *data;
+	t_l *tmp;
+	t_l *new;
+
+	ent = readdir(rep);
+	name = ft_strjoin(name, "/");
+	data = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL, opt);
+	tmp = data;
+	while ((ent = readdir(rep)) != NULL)
+	{
+		new = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL, opt);
+			if ((ft_strcmp(new->name, tmp->name)) <= 0)
+				data = ins_start(data, new);
+			else
+			{
+				while (tmp->next != NULL && ft_strcmp(new->name, (tmp->next)->name) >= 0)
+					tmp = tmp->next;
+				ins_middle(tmp, new, tmp->next);
+			}
+			tmp = data;
+	}
+	return (data);
+}
+
+t_l		*create_data(char *name, t_option *opt)
+{
+	DIR *rep;
+	t_l *data;
+
 	if ((rep = opendir(name)) == NULL)
 	{
 		if (errno)
@@ -77,23 +167,10 @@ t_l		*create_data(char *name, t_option *opt)
 			return (NULL);
 		}
 	}
-	ent = readdir(rep);
-	name = ft_strjoin(name, "/");
-	data = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL, opt);
-	tmp = data;
-	while ((ent = readdir(rep)) != NULL)
-	{
-		new = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL, opt);
-			if ((ft_strcmp(new->name, tmp->name)) < 0)
-				data = ins_start(data, new);
-			else
-			{
-				while (tmp->next != NULL && ft_strcmp(new->name, (tmp->next)->name) > 0)
-					tmp = tmp->next;
-				ins_middle(tmp, new, tmp->next);
-			}
-			tmp = data;
-	}
+	if (opt->t == 1)
+		data = fill_c_t_data(rep, name, opt);
+	else
+		data = fill_c_data(rep, name, opt);
 	closedir(rep);
 	return (data);
 }
