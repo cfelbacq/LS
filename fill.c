@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:47:39 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/20 13:48:30 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/20 17:10:09 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,10 @@ t_l		*fill_data(char *path, char *name, t_l *next, t_option *opt)
 	lstat(path, &buf);
 	get_path_name(data, path, name);
 	fill_type(&buf, data);
+	if (data->type == 'l')
+		data->link = ft_readlink(path, buf.st_size);
 	if (opt->l == 1)
 	{
-		if (data->type == 'l')
-			data->link = ft_readlink(path, buf.st_size);
 		data->time = (char *)ft_memalloc((ft_strlen(ctime(&buf.st_mtime))) + 1);
 		data->time = get_time(ft_strcpy(data->time, (ctime(&buf.st_mtime))),\
 				&buf);

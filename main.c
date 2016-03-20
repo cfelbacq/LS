@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/18 13:49:19 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/20 14:58:57 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/20 16:39:04 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ls.h"
@@ -166,11 +166,9 @@ t_l	*reverse(t_l *data)
 
 void	print_dir(char *name, t_option *opt)
 {
-	int i;
 	t_l *data;
 	t_l *tmp;
 
-	i = 0;
 	if ((data = create_data(name, opt)) == NULL)
 		return ;
 	if (name[ft_strlen(name) - 1] != '/')

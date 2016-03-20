@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/18 15:48:31 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/20 13:31:37 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/20 16:58:18 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,23 @@ void	get_user_grp(t_l *data, t_stat buf)
 	t_passwd	*get;
 	t_group		*getgrp;
 
-	get = getpwuid(buf.st_uid);
-	getgrp = getgrgid(buf.st_gid);
-	data->user = (char *)ft_memalloc(sizeof(char) * \
+	if ((get = getpwuid(buf.st_uid)) != NULL)
+	{
+		data->user = (char *)ft_memalloc(sizeof(char) * \
 			ft_strlen(get->pw_name));
-	data->group_name = (char *)ft_memalloc(sizeof(char) *\
-			ft_strlen(getgrp->gr_name + 1));
-	data->nb_link = buf.st_nlink;
-	ft_strcpy(data->user, get->pw_name);
-	ft_strcpy(data->group_name, getgrp->gr_name);
+		ft_strcpy(data->user, get->pw_name);
+	}
+	else
+		data->user = ft_itoa(buf.st_uid);
+	if ((getgrp = getgrgid(buf.st_gid)) != NULL)
+	{
+		data->group_name = (char *)ft_memalloc(sizeof(char) *\
+				ft_strlen(getgrp->gr_name + 1));
+		data->nb_link = buf.st_nlink;
+		ft_strcpy(data->group_name, getgrp->gr_name);
+	}
+	else
+		data->group_name = ft_itoa(buf.st_gid);
 }
 
 void	get_path_name(t_l *data, char *path, char *name)
