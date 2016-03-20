@@ -6,13 +6,29 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/18 14:31:53 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/18 14:34:31 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/20 14:59:25 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-void	fill_mod(struct stat *buf, t_l *data)
+void	fill_modsst(t_l *data, t_stat *buf)
+{
+	if (buf->st_mode & S_ISUID && data->mode[2] == 'x')
+		data->mode[2] = 's';
+	else if (buf->st_mode & S_ISUID && data->mode[2] == '-')
+		data->mode[2] = 'S';
+	if (buf->st_mode & S_ISGID && data->mode[5] == 'x')
+		data->mode[5] = 's';
+	else if (buf->st_mode & S_ISGID && data->mode[5] == '-')
+		data->mode[5] = 'S';
+	if (buf->st_mode & S_ISVTX && data->mode[8] == 'x')
+		data->mode[8] = 't';
+	else if (buf->st_mode & S_ISVTX && data->mode[8] == '-')
+		data->mode[8] = 'T';
+}
+
+void	fill_mod(t_stat *buf, t_l *data)
 {
 	data->mode = (char *)ft_memalloc(sizeof(char) * 10);
 	ft_memset(data->mode, '-', 9);
@@ -35,6 +51,7 @@ void	fill_mod(struct stat *buf, t_l *data)
 		data->mode[7] = 'w';
 	if (buf->st_mode & S_IXOTH)
 		data->mode[8] = 'x';
+	fill_modsst(data, buf);
 }
 
 void	fill_type(struct stat *buf, t_l *data)
@@ -61,8 +78,8 @@ char	*ft_readlink(char *path, int size)
 	char *link_name;
 	
 	r = 0;
-	link_name = malloc(size + 1);
-	r = readlink(path, link_name, size + 1);
-	link_name[size] = '\0';
+	link_name = (char *)ft_memalloc(sizeof(char) * size + 1);
+	r = readlink(path, link_name, size + 5);
+	link_name[r] = '\0';
 	return (link_name);
 }

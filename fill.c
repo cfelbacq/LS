@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:47:39 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/19 14:08:17 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/20 13:48:30 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,15 +85,10 @@ t_l		*fill_data(char *path, char *name, t_l *next, t_option *opt)
 {
 	t_l			*data;
 	t_stat		buf;
-	t_passwd	*get;
-	t_group		*getgrp;
 
 	data = (t_l *)ft_memalloc(sizeof(t_l));
 	lstat(path, &buf);
-	data->path = (char *)ft_memalloc(sizeof(char) * ft_strlen(path) + 1);
-	data->path = ft_strcpy(data->path, path);
-	data->name = (char *)ft_memalloc(sizeof(char) * ft_strlen(name) + 1);
-	data->name = ft_strcpy(data->name, name);
+	get_path_name(data, path, name);
 	fill_type(&buf, data);
 	if (opt->l == 1)
 	{
@@ -102,20 +97,14 @@ t_l		*fill_data(char *path, char *name, t_l *next, t_option *opt)
 		data->time = (char *)ft_memalloc((ft_strlen(ctime(&buf.st_mtime))) + 1);
 		data->time = get_time(ft_strcpy(data->time, (ctime(&buf.st_mtime))),\
 				&buf);
-		getgrp = getgrgid(buf.st_gid);
-		get = getpwuid(buf.st_uid);
+		if (data->type == 'c' || data->type == 'b')
+			get_major_minor(data, buf);
+		get_user_grp(data, buf);
 		fill_mod(&buf, data);
 		data->nb_octet = buf.st_size;
-		data->user = (char *)ft_memalloc(sizeof(char) * \
-				ft_strlen(get->pw_name));
-		data->group_name = (char *)ft_memalloc(sizeof(char) *\
-				ft_strlen(getgrp->gr_name + 1));
 		data->nb_link = buf.st_nlink;
-		ft_strcpy(data->user, get->pw_name);
-		ft_strcpy(data->group_name, getgrp->gr_name);
 	}
+	get_time_sec(data, buf);
 	data->next = next;
 	return (data);
 }
-
-

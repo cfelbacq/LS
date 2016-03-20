@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/18 14:14:16 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/18 14:16:29 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/20 15:46:30 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ void	init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
 	rep = NULL;
 	while(tmp)
 	{
-
 		if (tmp->type == 'd')
 		{
 			if (nb_file > 0 || nb_rep > 1 || opt->err > 0)
@@ -33,7 +32,8 @@ void	init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
 				ft_putstr(tmp->name);
 				ft_putendl(":");
 			}
-			print_dir(tmp->name, opt);
+			if (tmp->type == 'd')
+				print_dir(tmp->name, opt);
 			i++;
 		}
 		tmp = tmp->next;

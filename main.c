@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/18 13:49:19 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/19 17:28:43 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/20 14:58:57 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ls.h"
@@ -70,36 +70,6 @@ void	ls(t_l *data, t_option *opt)
 	}
 }
 
-int	sort_c_t_data(char *name, t_l *tmp)
-{
-	t_stat buf;
-	t_stat buf1;
-
-	lstat(name, &buf);
-	lstat(tmp->name, &buf1);
-	ft_putstr(name);
-	ft_putstr("  ");
-	ft_putnbr((buf.st_mtimespec).tv_nsec);
-	ft_putstr("  ");
-	ft_putstr(tmp->name);
-	ft_putstr("  ");
-	ft_putnbr((buf1.st_mtimespec).tv_nsec);
-	ft_putstr("  \n");
-	if ((buf.st_mtimespec).tv_sec == (buf1.st_mtimespec).tv_sec)
-	{
-		if ((buf.st_mtimespec).tv_nsec > (buf1.st_mtimespec).tv_nsec)
-			return (0);
-		if ((buf.st_mtimespec).tv_nsec < (buf1.st_mtimespec).tv_nsec)
-			return (1);
-		if (ft_strcmp(name, tmp->name) < 0)
-			return (0);
-		return (1);
-	}
-	if((buf.st_mtimespec).tv_sec > (buf1.st_mtimespec).tv_sec)
-		return (0);
-	return (1);
-}
-
 static t_l		*fill_c_t_data(DIR *rep, char *name, t_option *opt)
 {
 	t_dirent *ent;
@@ -114,11 +84,11 @@ static t_l		*fill_c_t_data(DIR *rep, char *name, t_option *opt)
 	while ((ent = readdir(rep)) != NULL)
 	{
 		new = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL, opt);
-		if (sort_c_t_data(ent->d_name, tmp) == 0)
+		if (sort_time(new, tmp) == 0)
 			data = ins_start(data, new);
 		else
 		{
-			while (tmp->next != NULL && sort_c_t_data(ent->d_name, tmp->next) == 1)
+			while (tmp->next != NULL && sort_time(new, tmp->next) == 1)
 				tmp = tmp->next;
 			ins_middle(tmp, new, tmp->next);
 		}
@@ -225,12 +195,29 @@ void	print_dir(char *name, t_option *opt)
 	free_data(&data, 1, opt);
 }
 
+void	check_len_ar(int argc, char **argv)
+{
+	int i;
+
+	i = 0;
+	while (i < argc)
+	{
+		if (ft_strlen(argv[i]) == 0)
+		{
+			ft_putendl("ls: fts_open: No such file or directory");
+			exit (0);
+		}
+		i++;
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	t_option opt;
-
+	
 	init_option(&opt);
 	check_opt(argc ,&opt, argv);
+	check_len_ar(argc, argv);
 	if (argc == 1)
 		print_dir(".", &opt);
 	else

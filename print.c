@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:54:18 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/18 15:20:07 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/20 14:13:34 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,19 @@
 void	print_err_ar(char *str)
 {
 	ft_putstr("ls: ");
-	ft_putstr(str);
-	ft_putstr(": ");
-	perror("");
+	perror(str);
 }
 
 void	put_double_space(void)
 {
 	ft_putstr("  ");
+}
+
+void	print_maj_min(t_l *data)
+{
+	ft_putnbr(data->major);
+	ft_putstr(", ");
+	ft_putnbr(data->minor);
 }
 
 void	print_l(t_l *data, t_option *opt)
@@ -38,7 +43,10 @@ void	print_l(t_l *data, t_option *opt)
 		put_double_space();
 		ft_putstr(data->group_name);
 		put_double_space();
-		ft_putnbr(data->nb_octet);
+		if (data->type == 'c' || data->type == 'b')
+			print_maj_min(data);
+		else
+			ft_putnbr(data->nb_octet);
 		ft_putstr(data->time);
 		ft_putchar(' ');
 		ft_putstr(data->name);

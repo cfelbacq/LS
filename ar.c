@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/15 10:57:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/19 17:10:31 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/20 15:38:51 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,23 +40,22 @@ static t_l		*fill_ar(int i, int argc, char **argv, t_option *opt)
 
 int sort_time(t_l *new, t_l *tmp)
 {
-	t_stat buf;
-	t_stat buf1;
+	t_l	*tmp1;
+	t_l *tmp2;
 
-
-	lstat(new->name, &buf);
-	lstat(tmp->name, &buf1);
-	if ((buf.st_mtimespec).tv_sec == (buf1.st_mtimespec).tv_sec)
+	tmp1 = new;
+	tmp2 = tmp;
+	if ((tmp1->time_sec).tv_sec == (tmp2->time_sec).tv_sec)
 	{
-		if ((buf.st_mtimespec).tv_nsec > (buf1.st_mtimespec).tv_nsec)
+		if ((tmp1->time_sec).tv_nsec > (tmp2->time_sec).tv_nsec)
 			return (0);
-		if ((buf.st_mtimespec).tv_nsec < (buf1.st_mtimespec).tv_nsec)
+		if ((tmp1->time_sec).tv_nsec < (tmp2->time_sec).tv_nsec)
 			return (1);
-		if (ft_strcmp(new->name, tmp->name) <= 0)
+		if (ft_strcmp(new->name, tmp->name) < 0)
 			return (0);
 		return (1);
 	}
-	if((buf.st_mtimespec).tv_sec > (buf1.st_mtimespec).tv_sec)
+	if ((tmp1->time_sec).tv_sec > (tmp2->time_sec).tv_sec)
 		return (0);
 	return (1);
 }
@@ -113,7 +112,7 @@ static	t_l	*remove_link(t_l *ar, char *name, t_option *opt)
 	return (ar);
 }
 
-static	t_l	*check_file(t_l *ar, t_option *opt)
+t_l	*check_file(t_l *ar, t_option *opt)
 {
 	t_l *tmp;
 	struct stat buf;

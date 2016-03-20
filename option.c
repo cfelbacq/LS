@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:57:24 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/19 13:28:37 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/20 14:02:07 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,11 @@ void	check_opt(int argc, t_option *opt, char **str)
 				return ;
 		while (str[j][++i] != '\0')
 		{
+			if(str[j][i] == '-' && str[j][i + 1] == '-')
+			{
+				init_option(opt);
+				return ;
+			}
 			if (str[j][i] == 'l')
 				opt->l = 1;
 			else if (str[j][i] == 'R')
