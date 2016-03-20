@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:47:39 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/20 17:10:09 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/20 17:28:15 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,11 @@ t_l		*fill_data(char *path, char *name, t_l *next, t_option *opt)
 	t_stat		buf;
 
 	data = (t_l *)ft_memalloc(sizeof(t_l));
-	lstat(path, &buf);
+	if (lstat(path, &buf) == -1)
+	{
+		print_err(name);
+		return (NULL);
+	}
 	get_path_name(data, path, name);
 	fill_type(&buf, data);
 	if (data->type == 'l')

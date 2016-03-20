@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/18 13:49:19 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/20 16:39:04 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/20 17:47:14 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ls.h"
@@ -107,19 +107,23 @@ static t_l		*fill_c_data(DIR *rep, char *name, t_option *opt)
 	ent = readdir(rep);
 	name = ft_strjoin(name, "/");
 	data = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL, opt);
+	if ((data == NULL && (ent = readdir(rep)) == NULL))
+		return (NULL);
 	tmp = data;
 	while ((ent = readdir(rep)) != NULL)
 	{
-		new = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL, opt);
+		if ((new = fill_data(ft_strjoin(name, ent->d_name), ent->d_name, NULL, opt)) != NULL)
+		{
 			if ((ft_strcmp(new->name, tmp->name)) <= 0)
-				data = ins_start(data, new);
-			else
-			{
-				while (tmp->next != NULL && ft_strcmp(new->name, (tmp->next)->name) >= 0)
-					tmp = tmp->next;
-				ins_middle(tmp, new, tmp->next);
-			}
-			tmp = data;
+					data = ins_start(data, new);
+				else
+				{
+					while (tmp->next != NULL && ft_strcmp(new->name, (tmp->next)->name) >= 0)
+						tmp = tmp->next;
+					ins_middle(tmp, new, tmp->next);
+				}
+				tmp = data;
+		}
 	}
 	return (data);
 }
@@ -131,11 +135,8 @@ t_l		*create_data(char *name, t_option *opt)
 
 	if ((rep = opendir(name)) == NULL)
 	{
-		if (errno)
-		{
 			print_err(name);
 			return (NULL);
-		}
 	}
 	if (opt->t == 1)
 		data = fill_c_t_data(rep, name, opt);
