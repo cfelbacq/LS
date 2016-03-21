@@ -6,13 +6,13 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:57:24 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/21 17:30:33 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/21 18:24:40 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-void	print_ill_opt(char c)
+static	void	print_ill_opt(char c)
 {
 	ft_putstr("ls: illegal option -- ");
 	ft_putchar(c);
@@ -21,7 +21,7 @@ void	print_ill_opt(char c)
 	exit(0);
 }
 
-int		flag_ls_ok(char c)
+static	int		flag_ls_ok(char c)
 {
 	if (c == 'A' || c == 'B' || c == 'C' || c == 'F' || c == 'G' || c == 'H' \
 			|| c == 'L' || c == 'O' || c == 'P' || c == 'R' || c == 'S' \
@@ -35,7 +35,7 @@ int		flag_ls_ok(char c)
 	return (0);
 }
 
-void	check_char(t_option *opt, char c)
+static	void	check_char(t_option *opt, char c)
 {
 	if (c == 'l')
 		opt->l = 1;
@@ -53,7 +53,7 @@ void	check_char(t_option *opt, char c)
 		print_ill_opt(c);
 }
 
-void	check_opt(int argc, t_option *opt, char **str)
+void			check_opt(int argc, t_option *opt, char **str)
 {
 	int i;
 	int j;
@@ -68,7 +68,7 @@ void	check_opt(int argc, t_option *opt, char **str)
 			print_ill_opt('-');
 		else if (str[j][1] == '-' || str[j][0] != '-')
 			return ;
-		else if(str[j][0] == '-' && str[j][1] == '\0')
+		else if (str[j][0] == '-' && str[j][1] == '\0')
 			return ;
 		while (str[j][++i] != '\0')
 		{
@@ -81,7 +81,7 @@ void	check_opt(int argc, t_option *opt, char **str)
 	}
 }
 
-void	init_option(t_option *opt)
+void			init_option(t_option *opt)
 {
 	opt->l = 0;
 	opt->re = 0;
