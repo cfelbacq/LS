@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/18 14:31:53 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/20 14:59:25 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/21 16:21:03 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,9 @@ void	fill_type(struct stat *buf, t_l *data)
 
 char	*ft_readlink(char *path, int size)
 {
-	int r;
-	char *link_name;
-	
+	int		r;
+	char	*link_name;
+
 	r = 0;
 	link_name = (char *)ft_memalloc(sizeof(char) * size + 1);
 	r = readlink(path, link_name, size + 5);

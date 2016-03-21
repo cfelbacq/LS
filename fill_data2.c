@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/18 15:48:31 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/20 16:58:18 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/21 16:18:45 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,6 @@ void	get_path_name(t_l *data, char *path, char *name)
 
 void	get_time_sec(t_l *data, t_stat buf)
 {
-		(data->time_sec).tv_sec = (buf.st_mtimespec).tv_sec;
-		(data->time_sec).tv_nsec = (buf.st_mtimespec).tv_nsec;
+	(data->time_sec).tv_sec = (buf.st_mtimespec).tv_sec;
+	(data->time_sec).tv_nsec = (buf.st_mtimespec).tv_nsec;
 }

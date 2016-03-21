@@ -1,27 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ins.c                                              :+:      :+:    :+:   */
+/*   total.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/03/18 14:20:25 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/21 16:26:37 by cfelbacq         ###   ########.fr       */
+/*   Created: 2016/03/21 16:37:24 by cfelbacq          #+#    #+#             */
+/*   Updated: 2016/03/21 16:39:26 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-t_l		*ins_start(t_l *begin, t_l *new)
+int	round_total(float nb)
 {
-	new->next = begin;
-	begin = new;
-	return (begin);
+	int nb_div;
+
+	nb_div = nb / 512;
+	if (nb / 512 > nb_div)
+		return (nb / 512 + 1);
+	return (nb / 512);
 }
 
-void	ins_middle(t_l *prev, t_l *new, t_l *next)
+int	total(t_l *data)
 {
-	prev->next = new;
-	if (next != NULL)
-		new->next = next;
+	t_l		*tmp;
+	t_stat	buf;
+	int		total;
+	int		count;
+
+	count = 0;
+	total = 0;
+	tmp = data;
+	while (tmp)
+	{
+		lstat(tmp->path, &buf);
+		total = total + round_total(buf.st_size);
+		tmp = tmp->next;
+	}
+	return (total);
 }

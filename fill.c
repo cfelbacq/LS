@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:47:39 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/20 17:28:15 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/21 16:58:58 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,12 @@ static	char	*fill_year(char *ttime, char *time_print, int j, int i)
 	return (time_print);
 }
 
-static	char *get_time(char *ttime, t_stat *buf)
+static	char	*get_time(char *ttime, t_stat *buf)
 {
-	char *time_print;
-	int i;
-	int count;
-	int j;
+	char	*time_print;
+	int		i;
+	int		count;
+	int		j;
 
 	j = 0;
 	count = 0;
@@ -81,17 +81,13 @@ static	char *get_time(char *ttime, t_stat *buf)
 	return (time_print);
 }
 
-t_l		*fill_data(char *path, char *name, t_l *next, t_option *opt)
+t_l				*fill_data(char *path, char *name, t_l *next, t_option *opt)
 {
 	t_l			*data;
 	t_stat		buf;
 
 	data = (t_l *)ft_memalloc(sizeof(t_l));
-	if (lstat(path, &buf) == -1)
-	{
-		print_err(name);
-		return (NULL);
-	}
+	lstat(path, &buf);
 	get_path_name(data, path, name);
 	fill_type(&buf, data);
 	if (data->type == 'l')

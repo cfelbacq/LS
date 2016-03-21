@@ -6,29 +6,11 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:54:18 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/20 14:13:34 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/21 16:59:51 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
-
-void	print_err_ar(char *str)
-{
-	ft_putstr("ls: ");
-	perror(str);
-}
-
-void	put_double_space(void)
-{
-	ft_putstr("  ");
-}
-
-void	print_maj_min(t_l *data)
-{
-	ft_putnbr(data->major);
-	ft_putstr(", ");
-	ft_putnbr(data->minor);
-}
 
 void	print_l(t_l *data, t_option *opt)
 {
@@ -36,13 +18,13 @@ void	print_l(t_l *data, t_option *opt)
 	{
 		ft_putchar(data->type);
 		ft_putstr(data->mode);
-		put_double_space();
+		ft_putstr("  ");
 		ft_putnbr(data->nb_link);
 		ft_putchar(' ');
 		ft_putstr(data->user);
-		put_double_space();
+		ft_putstr("  ");
 		ft_putstr(data->group_name);
-		put_double_space();
+		ft_putstr("  ");
 		if (data->type == 'c' || data->type == 'b')
 			print_maj_min(data);
 		else
@@ -73,7 +55,7 @@ void	print_opt(t_option *opt)
 	ft_putnbr(opt->l);
 	ft_putchar('\n');
 	ft_putstr("R : ");
-	ft_putnbr(opt->R);
+	ft_putnbr(opt->re);
 	ft_putchar('\n');
 	ft_putstr("a : ");
 	ft_putnbr(opt->a);
@@ -88,8 +70,8 @@ void	print_opt(t_option *opt)
 
 void	print_err(char *str)
 {
-	char **tab;
-	int i;
+	char	**tab;
+	int		i;
 
 	i = 0;
 	tab = ft_strsplit(str, '/');

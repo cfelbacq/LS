@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/18 14:14:16 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/20 16:20:54 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/21 16:21:29 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	init_rep(t_l *ar, t_option *opt, int nb_file, int nb_rep)
 	i = 0;
 	tmp = ar;
 	rep = NULL;
-	while(tmp)
+	while (tmp)
 	{
 		if (tmp->type == 'd')
 		{
@@ -45,7 +45,7 @@ void	init_file(t_l *ar, t_option *opt, int *nb_file, int *nb_rep)
 	t_l *tmp;
 
 	tmp = ar;
-	while(tmp)
+	while (tmp)
 	{
 		if (tmp->type != 'd')
 		{
