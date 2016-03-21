@@ -6,7 +6,7 @@
 #    By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/10 11:59:46 by cfelbacq          #+#    #+#              #
-#    Updated: 2016/03/20 13:21:48 by cfelbacq         ###   ########.fr        #
+#    Updated: 2016/03/21 16:54:54 by cfelbacq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,11 @@ SOURCE = SRC/main.c \
 		 SRC/ar.c \
 		 SRC/free.c \
 		 SRC/init.c \
-		 SRC/ins.c
+		 SRC/ins.c \
+		 SRC/check.c \
+		 SRC/print2.c \
+		 SRC/total.c \
+		 SRC/dir.c
 
 OBJ = main.o \
 	  option.o \
@@ -32,7 +36,11 @@ OBJ = main.o \
 	  ar.o \
 	  free.o \
 	  init.o \
-	  ins.o
+	  ins.o \
+	  check.o \
+	  print2.o \
+	  total.o \
+	  dir.o
 
 LIB = libft/libft.a
 
