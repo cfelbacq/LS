@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:57:24 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/22 13:32:27 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/22 13:59:06 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ static	void	print_ill_opt(char c)
 	ft_putstr_fd("ls: illegal option -- ", 2);
 	ft_putchar(c);
 	ft_putchar('\n');
-	ft_putendl_fd("usage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1]\
-			[file ...]", 2);
+	ft_putstr_fd("usage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1]", 2);
+	ft_putendl_fd(" [file ...]", 2);
 	exit(0);
 }
 
