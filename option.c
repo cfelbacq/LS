@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:57:24 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/21 18:24:40 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/22 13:32:27 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 static	void	print_ill_opt(char c)
 {
-	ft_putstr("ls: illegal option -- ");
+	ft_putstr_fd("ls: illegal option -- ", 2);
 	ft_putchar(c);
 	ft_putchar('\n');
-	ft_putendl("usage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1] [file ...]");
+	ft_putendl_fd("usage: ls [-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1]\
+			[file ...]", 2);
 	exit(0);
 }
 
@@ -63,6 +64,7 @@ void			check_opt(int argc, t_option *opt, char **str)
 	j = 0;
 	while (++j < argc)
 	{
+		count = 0;
 		i = -1;
 		if (str[j][1] == '-' && str[j][0] == '-' && str[j][2] != '\0')
 			print_ill_opt('-');

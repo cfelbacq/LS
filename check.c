@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/21 16:28:11 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/21 16:47:05 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/22 11:01:56 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	check_len_ar(int argc, char **argv)
 	{
 		if (ft_strlen(argv[i]) == 0)
 		{
-			ft_putendl("ls: fts_open: No such file or directory");
+			ft_putendl_fd("ls: fts_open: No such file or directory", 2);
 			exit(0);
 		}
 		i++;

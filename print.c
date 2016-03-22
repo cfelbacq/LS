@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/10 11:54:18 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/21 16:59:51 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/22 11:13:14 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,9 @@ void	print_err(char *str)
 	while (tab[i] != NULL)
 		i++;
 	i--;
-	ft_putstr("ls: ");
-	ft_putstr(tab[i]);
-	ft_putstr(": ");
+	ft_putstr_fd("ls: ", 2);
+	ft_putstr_fd(tab[i], 2);
+	ft_putstr_fd(": ", 2);
 	perror("");
 	free_double(tab);
 }

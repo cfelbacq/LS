@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/15 10:57:38 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/21 16:36:22 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/22 13:25:26 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,18 +88,17 @@ static	t_l		*fill_t_ar(int i, int argc, char **argv, t_option *opt)
 
 static void		sort_ar(t_l *ar, t_option *opt)
 {
-	int nb_file;
-	int nb_rep;
+	t_nb nb;
 
-	nb_file = 0;
-	nb_rep = 0;
+	nb.file = 0;
+	nb.rep = 0;
 	ar = check_file(ar, opt);
 	if (opt->r == 1)
 		ar = reverse(ar);
 	if (ar == NULL)
 		exit(0);
-	init_file(ar, opt, &nb_file, &nb_rep);
-	init_rep(ar, opt, nb_file, nb_rep);
+	init_file(ar, opt, &nb);
+	init_rep(ar, opt, &nb);
 }
 
 void			start(int argc, char **argv, t_option *opt)

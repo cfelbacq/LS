@@ -6,7 +6,7 @@
 /*   By: cfelbacq <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/21 16:40:05 by cfelbacq          #+#    #+#             */
-/*   Updated: 2016/03/21 17:01:19 by cfelbacq         ###   ########.fr       */
+/*   Updated: 2016/03/22 11:09:38 by cfelbacq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	print_err_ar(char *str)
 {
-	ft_putstr("ls: ");
+	ft_putstr_fd("ls: ", 2);
 	perror(str);
 }
 
